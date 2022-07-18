@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/assets/sweetalert/v2/sweetalert2.min.css">
     <link rel="stylesheet" href="assets/iziToast/iziToast-1.4.0.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -20,8 +21,11 @@
                 </div>
                 <div class="col-sm-7">
                     <a class="btn btn-outline-light create-modal"><i class="fa fa-plus-square-o"></i>
-                        <span id="btnAddnew">Add New Customer</span></a>
-                    <a href="/transfers" class="btn btn-outline-light"><i class="fa fa-history"></i> <span>Transfer history</span></a>
+                        <span id="btnAddnew">
+                            <i class="fa-solid fa-plus"></i>
+                            Add New Customer
+                        </span></a>
+                    <a href="transfer_history.html" class="btn btn-outline-light"><i class="fa fa-history"></i> <span>Transfer history</span></a>
                 </div>
             </div>
         </header>
@@ -49,12 +53,29 @@
             </table>
         </div>
         <div id="showButton" class="hideButton">
-            <button id="btnUpdate" data-id="" class="btn btn-outline-primary">Update</button>
-            <button id="btnDoactive" data-id="" class="btn btn-outline-danger">Doactive</button>
-            <button id="btnDeposit" data-id="" class="btn btn-outline-warning">Deposit</button>
-            <button id="btnWithdraw" data-id="" class="btn btn-outline-success">Withdraw</button>
-            <button id="btnTransfer" data-id="" class="btn btn-outline-light">Transfer</button>
-            <button id="btnClose" data-id="" class="btn btn-outline-light">Close</button>
+            <button id="btnUpdate" data-id="" class="btn btn-primary">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Update
+            </button>
+            <button id="btnDoactive" data-id="" class="btn btn-danger">
+                <i class="fa-solid fa-ban"></i>
+                Suspended
+            </button>
+            <button id="btnDeposit" data-id="" class="btn btn-warning">
+                <i class="fa-solid fa-plus"></i>
+                Deposit
+            </button>
+            <button id="btnWithdraw" data-id="" class="btn btn-success">
+                <i class="fa-solid fa-minus"></i>
+                Withdraw
+            </button>
+            <button id="btnTransfer" data-id="" class="btn btn-info">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                Transfer
+            </button>
+            <button id="btnClose" data-id="" class="btn btn-dark">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
     </div>
     <div id="modalCreateCustomer" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
@@ -565,7 +586,7 @@
             return $.ajax({
                 "async" : false,
                 "type": "GET",
-                "url": "http://localhost:3002/customers/"
+                "url": "http://localhost:3002/customers/?deleted=0"
             })
             .done((data) => {
                 $("#recipientIdTra").html("");
@@ -757,6 +778,7 @@
         // Sự kiện đóng danh sách các nút
         $('#btnClose').on('click',function(){
             $("#showButton").removeClass("showButton").addClass("hideButton");
+            $('#tbListCustomers tbody tr').removeClass("red");
         })
 
         // Hàm xử lý sự kiện thay đổi tỉnh / tp
@@ -1358,6 +1380,7 @@
                                             "data": JSON.stringify(recipient)
                                         })
                                         .done((item) => {
+                                            App.IziToast.showAlertSuccess("Cộng Tiền Khách Hàng Chuyển Tiền Thành Công");
                                             sender.balance = senderBalance;
                                             $.ajax({
                                                 "headers": {
@@ -1370,8 +1393,10 @@
                                                 "data": JSON.stringify(sender)
                                             })
                                             .done((item2) => {
+                                                App.IziToast.showAlertSuccess("Trừ Tiền Khách Hàng Nhận Tiền Thành Công");
                                                 $("#showButton").removeClass("showButton").addClass("hideButton");
                                                 $('#modalTransfer').modal('hide');
+                                                $('#tbListCustomers tbody tr').removeClass("red");
                                                 $('#transferAmountTra').val("");
                                             })
                                         })
